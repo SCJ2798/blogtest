@@ -25,3 +25,40 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+input ,textarea{
+  color: rgb(255, 255, 255);
+  padding: 16px;
+  border: 2px solid rgb(255, 255, 255);
+  background-color: black;
+  width: 40vw;
+  font-size: 16px;
+}
+
+
+
+button{
+  padding: 16px;
+  border: 2px solid rgb(255, 255, 255);
+}
+
+span{
+  margin-top: 16px;
+  color: rgb(245, 90, 90);
+}
+
+.pad-16{
+  padding: 16px;
+}
+
+.font-32{
+  font-size: 32px;
+}
+
+.list-title{
+  font-size: 20px;
+}
+
+.list-sub-title{
+  font-size: 8px;
+}
