@@ -1,8 +1,9 @@
 'use client'
 
 import Navbar from '@components/navbar';
-import { getAllBlogUsingId, getBlogUsingId } from '@services/blog_service';
+import {getBlogUsingId } from '@services/blog_service';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import styles from './style.module.css';
 
@@ -10,6 +11,7 @@ import styles from './style.module.css';
 
 export default function Page({params}){
 
+    const route = useRouter();
     const [isLoading,setIsLoading] = useState(true);
     const [data,setData] = useState([]);
     const [author,setAuthor] = useState({
@@ -18,9 +20,10 @@ export default function Page({params}){
     });
 
     useEffect(() => {
-        try {
-            const fetchData = async () =>{
-                const res = await getBlogUsingId(params.postId,(status)=>{
+        
+            const fetchData = async (id) =>{
+
+                const res = await getBlogUsingId(id,(status)=>{
                 });
     
                 if(res){
@@ -28,18 +31,18 @@ export default function Page({params}){
                     setData(response_data[0]);
                     setAuthor(response_data[0].author);
                     setIsLoading(false);
+                }else{
+
                 }
                
             }
-    
-            fetchData();
+        
+        try{
+            fetchData(params.postId);
     
         } catch (error) {
-            
+            console.log(error);
         }
-        
-        // console.log(params.postId);
-        // console.log(data);
         
     },[]);
 

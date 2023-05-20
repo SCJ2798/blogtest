@@ -70,7 +70,7 @@ export default function Home() {
       author={blog.author.first_name} 
       content={blog.body} 
       date={new Date(blog.createdAt).toLocaleDateString()} />
-      }) :  <div> No data</div>  ;
+    }) :  <div> No data</div>  ;
 
 
   
