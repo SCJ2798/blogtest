@@ -53,18 +53,23 @@ export default function Page({params}){
     <div className={styles.title}> {data.title} </div>
     <div className={styles.date}> {new Date(data.updatedAt).toLocaleDateString()} </div>
     <div className={styles.content} > <p> {data.body} </p> </div>
-    <div className={styles.author_txt}> { author.first_name && "Written by"} { author.first_name && authorLink(author) }</div>
-
+    <div className={styles.author_txt}> 
+         <div className={styles.author_txt_h2}><label  >{ author.first_name && "Written by"}</label></div>
+         <div className={styles.author_txt_h1} > <label>{ author.first_name && authorLink(author) }</label> </div>
+        
+    </div>
+   
 </div>);
 
-    // return(
-    //     <div className={styles.blog} >
-    //         <div className={styles.title}> {data.title} </div>
-    //         <div className={styles.date}> {new Date(data.updatedAt).toLocaleDateString()} </div>
-    //         <div className={styles.content} > {data.body} </div>
-    //         <div className={styles.author_txt}> { data.author.first_name && "Written by"} { data.author.first_name && authorLink(data.author) }</div>
-    //     </div>
-    // );
+  
 
-    return ( <div> <Navbar/>  {isLoading ? <div> Loading </div> : viewBlog} </div>); 
+    return ( <section className='blog-view-page'> 
+                
+            <Navbar/> 
+            
+            <div className={styles.blog_view}>
+                {isLoading ? <div> Loading </div> : viewBlog} 
+            </div>
+        
+        </section>); 
 }

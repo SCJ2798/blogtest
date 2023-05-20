@@ -3,7 +3,14 @@ import { getCookie, hasCookie } from "cookies-next";
 
 export async function getAllBlog(onError){
 
-    const response = await fetch(BASE_URL+"/blog/");
+    const response = await fetch(BASE_URL+"blog/",{
+        method:'GET',
+        headers:{
+        'Content-Type':'application/json',
+        'Access-Control-Allow-Origin': '*'
+        }
+    },);
+   
 
     if(response.status == 200){
         return response;
@@ -26,14 +33,12 @@ export async function getBlogUsingId(blogId,onError){
 export async function getBlogUsingUserId(userId,onError){
 
     const response = await fetch(BASE_URL+"blog/user/"+userId);
-    if(response.status == 200){
+    if(response.ok){
         return response;
     }else{
         onError(response.status);
     }
 }
-
-
 
 export async function createBlog({title,body,author_id},token,onError){
 

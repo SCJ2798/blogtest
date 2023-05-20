@@ -5,10 +5,13 @@ import styles from './style.module.css';
 
 import { useEffect, useState } from "react";
 import { useSearchParams,useRouter, redirect } from "next/navigation";
-import { deleteBlog } from "@services/blog_service";
+import { deleteBlog, getBlogUsingUserId } from "@services/blog_service";
 import { checkCookies, deleteCookie, getCookie, hasCookie } from "cookies-next";
 import { checkUser } from "@services/user_service";
 import Navbar from "@components/navbar";
+import BlogCard from "@components/blog-card";
+import LoadingView from "@components/loading";
+import MessageView from "@components/msg-view";
 
 
 export default function UserPage({params}){
@@ -16,14 +19,15 @@ export default function UserPage({params}){
     const routerParams = useSearchParams();
     const router = useRouter();
     const [ data,setData] = useState([]);
-
-    const [error,setError] = useState({
-        title:'',
-        body:'',
-    });
+    const [isLoading,setIsLoading] = useState(true);
+    const [error,setError] = useState();
 
     useEffect(() => {
 
+        setIsLoading(true);
+
+        try {
+            
         if(!hasCookie('access_token')) router.push('/signin');
 
         const fetchData = async () =>{
@@ -33,13 +37,28 @@ export default function UserPage({params}){
                 router.push('/signin');
             });
 
-        const res = await fetch("http://localhost:3000/api/blog/user/"+params.userId);
-        const response_data = await res.json();
-        setData(response_data)
+            const res = await getBlogUsingUserId(params.userId);
+
+            if(res){
+                const response_data = await res.json();
+                setData(response_data)
+                setIsLoading(false);
+            }else{
+                setError("No data")
+                setIsLoading(true);
+            }
+        
         };
 
         fetchData();
-        console.log(params);
+       
+        } catch (error) {
+            console.log(error);
+            setError("Oops!, Something wen wrong");
+            setIsLoading(false)
+        }
+
+        
         
     },[setData]);
 
@@ -57,26 +76,24 @@ export default function UserPage({params}){
         }
     };
 
-    // signOut
-    const signOut = () => {
-        if(hasCookie('access_token')) deleteCookie('access_token');
-        router.push('/signin');
-    };
-
+   
     const gotoCreateNewBlog = () => {
         router.push(`/blog/new/${params.userId}`)
     };
 
     const listItems = data.map((blog,index) => {
            return( 
-                    <div  key={`bd${index}`} style={{display:'flex',justifyItems:'flex-end',width:'80vw'} }>
-                        <Link href={`/blog/${blog._id}`}>
-                            <div className={styles.link} style={{flex:6}} >
-                                <div> <label className={styles.title}> {blog.title}</label></div>
-                                <div> <label className={styles.date}> {new Date(blog.createdAt).toLocaleDateString()} </label></div>
-                            </div>
+                    <div  key={`bd${index}` } className='user-blog-card'>
+
+                        {/* <BlogCard href={`/blog/${blog._id}`} title={blog.title} content={blog.body} date={new Date(blog.createdAt).toLocaleDateString()} /> */}
+
+                        <Link className="comp_one" href={`/blog/${blog._id}`}>
+                                <div className="title"> <label> {blog.title}</label></div>
+                                <div className="date-text"> <label> {new Date(blog.createdAt).toLocaleDateString()} </label></div>
+                          
                         </Link>
-                        <div style={{display:'flex',flex:1}}> 
+
+                        <div className="option-btn"> 
                                 <button onClick={()=> router.push(`blog/edit/${blog._id}`)} style={{margin:16,paddingInline:24}}> Edit </button>
                                 <button style={{margin:16,paddingInline:24}} onClick={()=>deletePost(blog._id)} > Delete </button>
                          </div>
@@ -86,13 +103,15 @@ export default function UserPage({params}){
     });
     
     return(
-        <div>
+        <section className="user-profile-page">
+            
             <Navbar/>
-            <div style={{textAlign:'center',fontSize:24}}>
-            <button  onClick={gotoCreateNewBlog}> Create new Blog </button>
-                <label> { routerParams.get('name') && `${routerParams.get('name')} Blog`}</label>
+
+            <div className="create-new-blog-button" >
+                <button  onClick={gotoCreateNewBlog}> Create new Blog </button>
             </div>
-            {listItems}
-        </div>
+            
+            { isLoading ? <LoadingView/> : error ? <MessageView msg={error}/> : listItems }
+        </section>
     );
 }

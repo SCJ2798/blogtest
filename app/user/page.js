@@ -5,6 +5,7 @@ import styles from './style.module.css'
 
 import { useEffect, useState } from "react";
 import Navbar from "@components/navbar";
+import { getBlogUsingUserId } from "@services/blog_service";
 
 export default function UserPage({params}){
 
@@ -12,15 +13,23 @@ export default function UserPage({params}){
     // const router = useRouter();
 
     useEffect(() => {
-        //
-        const fetchData = async () =>{
-        const res = await fetch("http://localhost:3000/api/blog/user/"+params.userId);
-        const response_data = await res.json();
-        setData(response_data);
-        };
-
-        fetchData();
-        
+        try {
+            ///
+            const fetchData = async () =>{
+                const res = await getBlogUsingUserId(params.userId,(status) => {});
+                if(res){
+                    const response_data = await res.json();
+                    setData(response_data);
+                }
+           
+            };
+    
+            fetchData();
+            
+        } catch (error) {
+            console.log(error)
+        }
+       
     },[setData]);
 
     const listItems = data.map((blog,index) => {

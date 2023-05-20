@@ -24,20 +24,29 @@ export default function Navbar(){
         router.push('/signin');
     }
 
+    const goToSignIn = () => {
+        router.push('/signin');
+    }
+
+    const goToSignOut = () => {
+        router.push('/signup');
+    }
+
     return (
-    <nav style={{display:'flex',flex:1,alignItems:"flex-end",justifyContent:'space-between',padding:16}}>
-        <div> <h1 style={{color:'yellow',fontSize:26,fontStyle:'normal'}}>BlogTest</h1></div>
+    <nav style={{display:'flex',flex:1,alignItems:"flex-end",justifyContent:'space-between',padding:'48px 16px'}}>
+        
+        <Link href={'/'}> <div> <h1 style={{color:'white',fontSize:28,fontStyle:600}}>BlogTest</h1></div> </Link>
         
        {
          hasToken ? 
          <div>
-             <Link href={`/user/${uid}`}><label style={{padding:16}}> {uFirstName} </label></Link> 
+             <Link href={`/user/${uid}`}><label style={{padding:16,marginInline:16}}> {uFirstName} </label></Link> 
              <button onClick={signOut} > Sign Out </button> 
          </div>
         
-         : <div> 
-                <Link href={`/signin`}><label style={{padding:16}}> Sign In</label></Link>
-                <Link href={`/signup`} ><label style={{padding:16}}> Sign Up</label></Link>
+         :  <div> 
+                <button onClick={goToSignIn} style={{marginInline:12}}>Sign In</button>
+                <button onClick={goToSignOut} style={{marginInline:12}}>Sign Out</button>
             </div>
        }
         

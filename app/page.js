@@ -1,11 +1,17 @@
 'use client'
 
+import BlogCard from "@components/blog-card";
+import LoadingView from "@components/loading";
+import MessageView from "@components/msg-view";
 import Navbar from "@components/navbar";
 import { getAllBlog } from "@services/blog_service";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Home() {
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, serError] = useState("");
 
   const [ data,setData] = useState([]);
   const [ filterData,setFilterData] = useState([]);
@@ -14,14 +20,24 @@ export default function Home() {
       const fetchData = async () =>{
         try {
           const res = await getAllBlog((status)=>{
-
           });
-          const response_data = await res.json();
-          setData(response_data);
-          setFilterData(response_data);
+          
+          if(res){
+            const response_data = await res.json();
+            setData(response_data);
+            setFilterData(response_data);
+            setIsLoading(false);
+          }else{
+            setData([]);
+            setFilterData([])
+            setIsLoading(false);
+          }
 
         } catch (error) {
             console.log(error);
+            serError("Oops !, Something went wrong")
+            setIsLoading(false);
+          
         }
       
       };
@@ -48,22 +64,30 @@ export default function Home() {
   }
 
     const listItems = filterData.length > 0 ? filterData.map((blog,index) => {
-      return <Link  key={`bd${index}`} href={`/blog/${blog._id}`}>
-           <div style={{textAlign:'start',padding:12}} >
-               <div> <label > {blog.title}</label></div>
-               <div> <label> By {blog.author.first_name}</label></div>
-           </div>
-           </Link> 
+      return <BlogCard key={`bd${index}`} 
+      href={`/blog/${blog._id}`} 
+      title={blog.title} 
+      author={blog.author.first_name} 
+      content={blog.body} 
+      date={new Date(blog.createdAt).toLocaleDateString()} />
       }) :  <div> No data</div>  ;
+
+
   
   return (
-    <main>
+    <section className="home-page">
+
       <Navbar/>
-      <div>
-        <input type='text'  onChange={handleChange} />
+      
+      <div className="search-area"> 
+        <input style={{}} type='text'  onChange={handleChange} placeholder="Search Blog" />
       </div>
-       <label> Blogs </label>
-            {listItems}
-    </main>
+
+      <div className="blog-card-grid">{ isLoading  ? <LoadingView/> : error ? <MessageView msg={error}/> : listItems }</div> 
+
+      
+       
+           
+    </section>
   )
 }
