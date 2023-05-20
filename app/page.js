@@ -5,6 +5,7 @@ import LoadingView from "@components/loading";
 import MessageView from "@components/msg-view";
 import Navbar from "@components/navbar";
 import { getAllBlog } from "@services/blog_service";
+import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -76,6 +77,10 @@ export default function Home() {
   
   return (
     <section className="home-page">
+
+      <Head>
+        <meta property='Content-Security-Policy' content="upgrade-insecure-requests"/>
+      </Head>
 
       <Navbar/>
       

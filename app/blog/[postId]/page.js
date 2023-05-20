@@ -2,6 +2,7 @@
 
 import Navbar from '@components/navbar';
 import {getBlogUsingId } from '@services/blog_service';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -67,8 +68,14 @@ export default function Page({params}){
   
 
     return ( <section className='blog-view-page'> 
+
+            <Head>
+                <meta property='Content-Security-Policy' content="upgrade-insecure-requests"/>
+            </Head>
                 
             <Navbar/> 
+
+            
             
             <div className={styles.blog_view}>
                 {isLoading ? <div> Loading </div> : viewBlog} 
